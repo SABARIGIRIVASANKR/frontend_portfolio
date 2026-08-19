@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Github, Linkedin, Mail, MapPin, ExternalLink, Download, Code2,
   Database, Cpu, GraduationCap, Award, BriefcaseBusiness, Menu, X, ArrowUpRight
