@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import {
   Github, Linkedin, Mail, MapPin, ExternalLink, Download, Code2,
-  Database, Cpu, GraduationCap, Award, BriefcaseBusiness, Menu, X, ArrowUpRight
+  GraduationCap, Award, BriefcaseBusiness, Menu, X, ArrowUpRight,
+  Boxes, Layers3, Network, ServerCog, LockKeyhole, RefreshCw
 } from "lucide-react";
 import profile from "./assets/profile.png";
 import "./styles.css";
@@ -10,24 +11,46 @@ import "./styles.css";
 const skills = {
   "Programming": ["Java", "C", "JavaScript"],
   "Frontend": ["HTML5", "CSS3", "JavaScript", "React.js"],
-  "Backend": ["Java", "Spring Boot", "JDBC", "REST API"],
-  "Database & Tools": ["MySQL", "Git", "GitHub", "VS Code"],
-  "Core Concepts": ["DSA", "OOP", "Operating Systems", "Computer Networks", "Problem Solving"],
+  "Backend": ["Java", "Spring Boot", "JDBC", "REST APIs"],
+  "Database & Tools": ["MySQL", "SQL", "Git", "GitHub", "VS Code"],
+  "CS Foundations": ["DSA", "OOP", "Operating Systems", "Computer Networks", "Problem Solving"],
+  "Design & Architecture": ["LLD", "HLD", "System Design", "Design Patterns", "Scalability Basics"],
   "Embedded / IoT": ["Arduino", "ESP32", "ESP8266", "PCB Design"]
 };
+
+const designFoundations = [
+  {
+    icon: Layers3,
+    title: "Low-Level Design (LLD)",
+    text: "Practising requirement breakdown, class and interface design, SOLID principles, design patterns and clean, testable object-oriented code.",
+    tags: ["SOLID", "UML", "Design Patterns", "Clean Code"]
+  },
+  {
+    icon: Boxes,
+    title: "High-Level Design (HLD)",
+    text: "Learning how services, APIs, databases and external systems fit together, with clear boundaries and practical architecture trade-offs.",
+    tags: ["Components", "API Design", "Data Flow", "Trade-offs"]
+  },
+  {
+    icon: Network,
+    title: "Scalable System Design",
+    text: "Building foundations in horizontal scaling, load balancing, caching, database indexing, replication, queues and observability.",
+    tags: ["Caching", "Load Balancing", "Queues", "Observability"]
+  }
+];
 
 const projects = [
   {
     title: "Banking Management System",
     type: "Full Stack",
-    desc: "Scalable banking application with secure authentication, account management and a user-friendly interface. Built using modular OOP design for maintainability.",
-    stack: ["Java", "MySQL", "JDBC", "HTML", "CSS", "JavaScript"],
+    desc: "Full-stack banking application with authentication, account workflows and a responsive interface. Structured with layered, modular OOP design; future scale considerations include indexed queries, caching and stateless API services.",
+    stack: ["Java", "MySQL", "JDBC", "REST", "HTML", "CSS", "JavaScript"],
   },
   {
     title: "Student Management System",
     type: "Backend / Database",
-    desc: "Student record management system with secure database connectivity, CRUD operations, role-based access control and clean OOP architecture.",
-    stack: ["Java", "MySQL", "JDBC", "OOP"],
+    desc: "Student record platform with secure database connectivity, CRUD workflows and role-based access. Uses separation of concerns and a clean OOP model to keep features maintainable and extensible.",
+    stack: ["Java", "MySQL", "JDBC", "OOP", "RBAC"],
   },
   {
     title: "Smart Induction-Based Rubber Pyrolysis System",
@@ -50,13 +73,78 @@ const socials = {
   email: "mailto:krsabari08@gmail.com"
 };
 
+const createAccessCode = () => {
+  const characters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  return Array.from({ length: 4 }, () => characters[Math.floor(Math.random() * characters.length)]).join("");
+};
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dark, setDark] = useState(true);
+  const [accessCode, setAccessCode] = useState(createAccessCode);
+  const [enteredCode, setEnteredCode] = useState("");
+  const [accessGranted, setAccessGranted] = useState(false);
+  const [accessError, setAccessError] = useState("");
 
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
   }, [dark]);
+
+  const unlockPortfolio = (event) => {
+    event.preventDefault();
+    if (enteredCode.trim().toUpperCase() === accessCode) {
+      setAccessGranted(true);
+      setAccessError("");
+      return;
+    }
+    setAccessError("The code does not match. Please try again.");
+  };
+
+  const refreshAccessCode = () => {
+    setAccessCode(createAccessCode());
+    setEnteredCode("");
+    setAccessError("");
+  };
+
+  if (!accessGranted) {
+    return (
+      <main className="access-page">
+        <section className="access-card" aria-labelledby="access-title">
+          <div className="access-icon"><LockKeyhole size={26} /></div>
+          <span className="eyebrow">PORTFOLIO ACCESS</span>
+          <h1 id="access-title">Enter the code to continue</h1>
+          <p>Type the four-character code shown below to view Sabarigirivasan’s portfolio.</p>
+          <div className="access-code-row">
+            <strong className="access-code" aria-label={`Access code ${accessCode}`}>{accessCode}</strong>
+            <button type="button" className="refresh-code" onClick={refreshAccessCode} aria-label="Generate a new code">
+              <RefreshCw size={18} />
+            </button>
+          </div>
+          <form onSubmit={unlockPortfolio}>
+            <label htmlFor="access-code-input">Four-character code</label>
+            <input
+              id="access-code-input"
+              value={enteredCode}
+              onChange={(event) => {
+                setEnteredCode(event.target.value.toUpperCase().slice(0, 4));
+                setAccessError("");
+              }}
+              autoComplete="off"
+              autoCapitalize="characters"
+              maxLength={4}
+              placeholder="Enter code"
+              aria-describedby={accessError ? "access-error" : undefined}
+              autoFocus
+            />
+            {accessError && <span id="access-error" className="access-error" role="alert">{accessError}</span>}
+            <button className="btn primary access-submit" type="submit" disabled={enteredCode.length !== 4}>
+              View Portfolio <ArrowUpRight size={18} />
+            </button>
+          </form>
+        </section>
+      </main>
+    );
+  }
 
   const nav = ["about", "skills", "projects", "experience", "education", "contact"];
 
@@ -64,7 +152,10 @@ function App() {
     <div className="app">
       <header className="nav-shell">
         <nav className="nav container">
-          <a href="#home" className="brand">SKR<span>.</span></a>
+          <a href="#home" className="brand" aria-label="Sabarigirivasan KR — Home">
+            <span className="brand-avatar"><img src={profile} alt="" /></span>
+            <span className="brand-name">SKR<span>.</span></span>
+          </a>
 
           <div className={`nav-links ${menuOpen ? "open" : ""}`}>
             {nav.map((item) => (
@@ -90,11 +181,11 @@ function App() {
           <div className="hero-copy">
             <div className="eyebrow">AVAILABLE FOR SOFTWARE DEVELOPER OPPORTUNITIES</div>
             <h1>Hi, I'm <span>Sabarigirivasan KR</span>.</h1>
-            <h2>Software Developer focused on Java, backend systems and modern web applications.</h2>
+            <h2>Aspiring Full-Stack Developer building reliable Java backends and modern web experiences.</h2>
             <p>
-              ECE graduate with hands-on experience in Java, MySQL, Data Structures & Algorithms,
-              Spring Boot, web technologies and IoT projects. I enjoy building reliable, maintainable
-              solutions and solving algorithmic problems.
+              ECE graduate strengthening production-ready full-stack skills across Java, Spring Boot,
+              React, MySQL and REST APIs. I recently began focused learning in LLD, HLD and system design
+              to build software that stays clean, maintainable and ready to scale.
             </p>
 
             <div className="hero-buttons">
@@ -115,13 +206,15 @@ function App() {
             <div className="photo-ring">
               <img src={profile} alt="Sabarigirivasan KR" />
             </div>
-            <div className="floating-card code-card">
-              <span>250+</span>
-              <small>LeetCode problems</small>
-            </div>
-            <div className="floating-card location-card">
-              <MapPin size={18}/>
-              <div><strong>Chennai</strong><small>Tamil Nadu, India</small></div>
+            <div className="profile-meta">
+              <div className="floating-card code-card">
+                <span>250+</span>
+                <small>LeetCode problems</small>
+              </div>
+              <div className="floating-card location-card">
+                <MapPin size={18}/>
+                <div><strong>Chennai</strong><small>Tamil Nadu, India</small></div>
+              </div>
             </div>
           </div>
         </section>
@@ -134,14 +227,20 @@ function App() {
           <div className="about-grid">
             <div className="about-card">
               <p>
-                I am a fresher Software Developer with a strong foundation in Java, MySQL,
-                Data Structures & Algorithms and Object-Oriented Programming. I focus on
-                understanding requirements, writing clean code and building secure,
-                scalable and maintainable applications.
+                I am an aspiring Full-Stack Developer with a strong foundation in Java, MySQL,
+                Data Structures & Algorithms and Object-Oriented Programming. I turn requirements
+                into responsive interfaces, clear APIs and dependable data flows while improving
+                my Spring Boot and React skills toward a professional, production-ready level.
               </p>
               <p>
-                My background in Electronics and Communication Engineering also gives me
-                practical exposure to embedded systems, IoT, PCB design and hardware-software integration.
+                Alongside hands-on projects, I am actively learning LLD, HLD and scalable system design.
+                My ECE background also gives me practical exposure to embedded systems, IoT, PCB design
+                and hardware-software integration.
+              </p>
+              <p>
+                I am currently seeking an entry-level development role where I can contribute with Java,
+                Spring Boot, React and SQL, learn from experienced engineers, and grow into a full-stack
+                developer who can take ownership from interface design through backend architecture.
               </p>
             </div>
             <div className="stats">
@@ -170,9 +269,38 @@ function App() {
           </div>
         </section>
 
-        <section id="projects" className="section container">
+        <section id="system-design" className="section container">
           <div className="section-heading">
             <span>03</span>
+            <div>
+              <h3>System Design Foundations</h3>
+              <p className="section-intro">Recently added to my learning roadmap and now being applied to project decisions.</p>
+            </div>
+          </div>
+          <div className="design-grid">
+            {designFoundations.map(({ icon: Icon, title, text, tags }) => (
+              <article className="design-card" key={title}>
+                <div className="design-icon"><Icon size={22} /></div>
+                <h4>{title}</h4>
+                <p>{text}</p>
+                <div className="chips">
+                  {tags.map(tag => <span key={tag}>{tag}</span>)}
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="scale-path">
+            <ServerCog size={22} />
+            <div>
+              <strong>How I think about scale</strong>
+              <p>Start with a clear modular design, measure the bottleneck, optimize database access, add caching where it helps, keep services stateless for horizontal scaling, and introduce queues for slow asynchronous work.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="projects" className="section container">
+          <div className="section-heading">
+            <span>04</span>
             <h3>Featured Projects</h3>
           </div>
           <div className="projects-grid">
@@ -197,7 +325,7 @@ function App() {
 
         <section id="experience" className="section container">
           <div className="section-heading">
-            <span>04</span>
+            <span>05</span>
             <h3>Experience</h3>
           </div>
           <div className="timeline">
@@ -224,7 +352,7 @@ function App() {
 
         <section id="education" className="section container">
           <div className="section-heading">
-            <span>05</span>
+            <span>06</span>
             <h3>Education & Recognition</h3>
           </div>
           <div className="edu-grid">
@@ -256,7 +384,8 @@ function App() {
             <div>
               <span className="eyebrow">LET'S CONNECT</span>
               <h3>Looking for a fresher who loves building and learning?</h3>
-              <p>I’m open to Software Developer, Java Developer and entry-level full-stack opportunities.</p>
+              <p>I’m open to Full-Stack Developer, Java Developer and Software Developer opportunities.</p>
+              <a className="email-link" href={socials.email}>krsabari08@gmail.com</a>
             </div>
             <div className="contact-actions">
               <a className="btn primary" href={socials.email}><Mail size={18}/> Email Me</a>
@@ -272,9 +401,8 @@ function App() {
         <div className="container footer-inner">
           <div>
             <strong>Sabarigirivasan KR</strong>
-            <span>Software Developer</span>
+            <span>Aspiring Full-Stack Developer</span>
           </div>
-          <p>Built with React + Vite</p>
         </div>
       </footer>
     </div>
