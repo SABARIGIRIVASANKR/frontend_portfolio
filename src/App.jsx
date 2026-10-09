@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   Github, Linkedin, Mail, MapPin, ExternalLink, Download, Code2,
   GraduationCap, Award, BriefcaseBusiness, Menu, X, ArrowUpRight,
-  Boxes, Layers3, Network, ServerCog, LockKeyhole, RefreshCw
+  Boxes, Layers3, Network, ServerCog, Trophy, Sparkles, Cpu
 } from "lucide-react";
 import profile from "./assets/profile.png";
 import "./styles.css";
@@ -66,6 +66,27 @@ const projects = [
   },
 ];
 
+const achievements = [
+  {
+    icon: Trophy,
+    value: "Top 50",
+    title: "Niral Thiruvizha 2.0 Hackathon",
+    text: "Selected among the Top 50 winners at the TNSDC hackathon in 2025."
+  },
+  {
+    icon: Code2,
+    value: "250+",
+    title: "LeetCode problems solved",
+    text: "Consistent practice across data structures, algorithms and problem solving."
+  },
+  {
+    icon: Cpu,
+    value: "IoT + Software",
+    title: "Cross-domain project experience",
+    text: "Hands-on work spanning Java applications, embedded systems and automation."
+  }
+];
+
 const socials = {
   github: "https://github.com/SABARIGIRIVASANKR",
   linkedin: "https://www.linkedin.com/in/sabarigirivasan-k-r-284557198/",
@@ -83,28 +104,12 @@ function App() {
   const [dark, setDark] = useState(true);
   const [accessCode, setAccessCode] = useState(createAccessCode);
   const [enteredCode, setEnteredCode] = useState("");
-  const [accessGranted, setAccessGranted] = useState(false);
+  const [accessGranted, setAccessGranted] = useState(true);
   const [accessError, setAccessError] = useState("");
 
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
   }, [dark]);
-
-  const unlockPortfolio = (event) => {
-    event.preventDefault();
-    if (enteredCode.trim().toUpperCase() === accessCode) {
-      setAccessGranted(true);
-      setAccessError("");
-      return;
-    }
-    setAccessError("The code does not match. Please try again.");
-  };
-
-  const refreshAccessCode = () => {
-    setAccessCode(createAccessCode());
-    setEnteredCode("");
-    setAccessError("");
-  };
 
   if (!accessGranted) {
     return (
@@ -146,7 +151,7 @@ function App() {
     );
   }
 
-  const nav = ["about", "skills", "projects", "experience", "education", "contact"];
+  const nav = ["about", "skills", "projects", "achievements", "experience", "education", "contact"];
 
   return (
     <div className="app">
@@ -179,13 +184,12 @@ function App() {
       <main>
         <section id="home" className="hero container">
           <div className="hero-copy">
-            <div className="eyebrow">AVAILABLE FOR SOFTWARE DEVELOPER OPPORTUNITIES</div>
-            <h1>Hi, I'm <span>Sabarigirivasan KR</span>.</h1>
-            <h2>Aspiring Full-Stack Developer building reliable Java backends and modern web experiences.</h2>
+            <div className="eyebrow"><Sparkles size={14} /> OPEN TO SOFTWARE ENGINEERING OPPORTUNITIES</div>
+            <h1>I build software that <span>solves real problems.</span></h1>
+            <h2>I'm Sabarigirivasan KR — a Java-focused developer creating reliable backend systems and polished web experiences.</h2>
             <p>
-              ECE graduate strengthening production-ready full-stack skills across Java, Spring Boot,
-              React, MySQL and REST APIs. I recently began focused learning in LLD, HLD and system design
-              to build software that stays clean, maintainable and ready to scale.
+              ECE graduate with hands-on experience across Java, MySQL, React, REST APIs and IoT systems.
+              I focus on clean architecture, thoughtful UX and the fundamentals that make software reliable as it grows.
             </p>
 
             <div className="hero-buttons">
@@ -200,20 +204,28 @@ function App() {
               <a href={socials.linkedin} target="_blank" rel="noreferrer"><Linkedin size={20}/> LinkedIn</a>
               <a href={socials.leetcode} target="_blank" rel="noreferrer"><Code2 size={20}/> LeetCode</a>
             </div>
+            <div className="hero-proof" aria-label="Developer capabilities">
+              <span>JAVA</span><span>SPRING BOOT</span><span>REACT</span><span>REST APIs</span><span>MYSQL</span><span>GIT</span>
+            </div>
           </div>
 
-          <div className="hero-visual">
-            <div className="photo-ring">
+            <div className="hero-visual">
+              <div className="workspace-shot">
               <img src={profile} alt="Sabarigirivasan KR" />
+              <div className="workspace-shade" />
+              <div className="workspace-label">
+                <span>01 / SOFTWARE ENGINEER</span>
+                <strong>Plan. Build. Test. Improve.</strong>
+              </div>
             </div>
             <div className="profile-meta">
               <div className="floating-card code-card">
                 <span>250+</span>
-                <small>LeetCode problems</small>
+                <small>Problems solved</small>
               </div>
               <div className="floating-card location-card">
                 <MapPin size={18}/>
-                <div><strong>Chennai</strong><small>Tamil Nadu, India</small></div>
+                <div><strong>Chennai, India</strong><small>Available for opportunities</small></div>
               </div>
             </div>
           </div>
@@ -227,20 +239,18 @@ function App() {
           <div className="about-grid">
             <div className="about-card">
               <p>
-                I am an aspiring Full-Stack Developer with a strong foundation in Java, MySQL,
-                Data Structures & Algorithms and Object-Oriented Programming. I turn requirements
-                into responsive interfaces, clear APIs and dependable data flows while improving
-                my Spring Boot and React skills toward a professional, production-ready level.
+                I am a software developer with a strong foundation in Java, MySQL, Data Structures & Algorithms
+                and Object-Oriented Programming. I turn requirements into responsive interfaces, clear APIs
+                and dependable data flows.
               </p>
               <p>
-                Alongside hands-on projects, I am actively learning LLD, HLD and scalable system design.
-                My ECE background also gives me practical exposure to embedded systems, IoT, PCB design
-                and hardware-software integration.
+                My work pairs full-stack fundamentals with an ECE background in embedded systems, IoT,
+                PCB design and hardware-software integration. I am actively strengthening LLD, HLD
+                and practical system-design skills.
               </p>
               <p>
-                I am currently seeking an entry-level development role where I can contribute with Java,
-                Spring Boot, React and SQL, learn from experienced engineers, and grow into a full-stack
-                developer who can take ownership from interface design through backend architecture.
+                I am seeking an entry-level software engineering role where I can contribute with Java,
+                Spring Boot, React and SQL while learning to own features from interface through backend architecture.
               </p>
             </div>
             <div className="stats">
@@ -323,9 +333,26 @@ function App() {
           </div>
         </section>
 
-        <section id="experience" className="section container">
+        <section id="achievements" className="section container">
           <div className="section-heading">
             <span>05</span>
+            <h3>Achievements</h3>
+          </div>
+          <div className="achievement-grid">
+            {achievements.map(({ icon: Icon, value, title, text }) => (
+              <article className="achievement-card" key={title}>
+                <div className="achievement-icon"><Icon size={21} /></div>
+                <span className="achievement-value">{value}</span>
+                <h4>{title}</h4>
+                <p>{text}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="experience" className="section container">
+          <div className="section-heading">
+            <span>06</span>
             <h3>Experience</h3>
           </div>
           <div className="timeline">
@@ -352,7 +379,7 @@ function App() {
 
         <section id="education" className="section container">
           <div className="section-heading">
-            <span>06</span>
+            <span>07</span>
             <h3>Education & Recognition</h3>
           </div>
           <div className="edu-grid">
